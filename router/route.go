@@ -10,6 +10,8 @@ func SetupRoutes(app *fiber.App) {
 
 	api := app.Group("/api", middleware.AuthReq())
 
-	api.Get("/homestays", handler.HandleGetAllHomestays)
 	api.Get("/", func(c *fiber.Ctx) { c.JSON("Hi") })
+	api.Get("/homestays", handler.HandleGetAllHomestays)
+	api.Get("/homestays/:id", handler.HandleGetHomestayById)
+	api.Get("/locations", handler.HandleGetAllLocations)
 }

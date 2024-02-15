@@ -18,6 +18,9 @@ func Connect() error {
 	if err != nil {
 		return err
 	}
+	if err != nil {
+		return err
+	}
 	if err = DB.Ping(); err != nil {
 		return err
 	}
@@ -28,8 +31,4 @@ func Connect() error {
 		return err
 	}
 	return nil
-}
-
-func Close() {
-	DB.Close()
 }
