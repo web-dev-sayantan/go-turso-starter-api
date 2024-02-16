@@ -14,4 +14,5 @@ func SetupRoutes(app *fiber.App) {
 	api.Get("/homestays", handler.HandleGetAllHomestays)
 	api.Get("/homestays/:id", handler.HandleGetHomestayById)
 	api.Get("/locations", handler.HandleGetAllLocations)
+	api.Get("/homestays/:id/rooms", handler.HandleGetRoomsByHomestayId)
 }

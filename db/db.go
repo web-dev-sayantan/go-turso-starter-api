@@ -30,5 +30,8 @@ func Connect() error {
 	if _, err = CreateHomestayTable(); err != nil {
 		return err
 	}
+	if _, err = CreateRoomTable(); err != nil {
+		return err
+	}
 	return nil
 }

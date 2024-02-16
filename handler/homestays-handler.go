@@ -65,3 +65,55 @@ func HandleGetHomestayById(c *fiber.Ctx) {
 		})
 	}
 }
+
+func HandleGetRoomsByHomestayId(c *fiber.Ctx) {
+	homestayid := c.Params("id")
+	rows, err := db.DB.Query(`SELECT 
+		room.id, 
+		room.name, 
+		room.category,
+		room.baseOccupancy, 
+		room.extraoccupancy,
+		room.toiletAttached,
+		room.balconyAttached,
+		room.isDorm,
+		homestay.name
+		FROM room INNER JOIN homestay 
+		ON room.homestayId = homestay.id
+		WHERE homestayId = ?`, homestayid)
+	if err != nil {
+		c.Status(500).JSON(&fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+	defer rows.Close()
+	rooms := []data.Room{}
+
+	for rows.Next() {
+		room := data.Room{}
+		if err := rows.Scan(&room.ID, &room.Name, &room.Category, &room.BaseOccupancy, &room.ExtraOccupancy,
+			&room.ToiletAttached, &room.BalconyAttached, &room.IsDorm, &room.HomestayName); err != nil {
+			c.Status(500).JSON(&fiber.Map{
+				"success": false,
+				"message": err.Error(),
+			})
+			return
+		}
+		rooms = append(rooms, room)
+	}
+	res := data.SuccessResType[[]data.Room]{
+		Success: true,
+		Data: map[string][]data.Room{
+			"rooms": rooms,
+		},
+	}
+	if err := c.JSON(res); err != nil {
+		c.Status(500).JSON(&fiber.Map{
+			"success": false,
+			"message": err.Error(),
+		})
+		return
+	}
+}

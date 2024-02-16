@@ -23,3 +23,20 @@ func CreateHomestayTable() (*sql.Rows, error) {
 		FOREIGN KEY (locationId) REFERENCES location(id) 
 	)`)
 }
+func CreateRoomTable() (*sql.Rows, error) {
+	return DB.Query(`CREATE TABLE IF NOT EXISTS room (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR NOT NULL,
+		category VARCHAR NOT NULL,
+		baseOccupancy INTEGER NOT NULL,
+		extraOccupancy INTEGER DEFAULT 0,
+		toiletAttached BOOLEAN DEFAULT true,
+		balconyAttached BOOLEAN DEFAULT false,
+		kitchenAttached BOOLEAN DEFAULT false,
+		airConditioned BOOLEAN DEFAULT false,
+		recommended BOOLEAN DEFAULT false,
+		isDorm BOOLEAN DEFAULT false,
+		homestayId INTEGER,
+		FOREIGN KEY (homestayId) REFERENCES homestay(id) 
+	)`)
+}
