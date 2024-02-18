@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/gofiber/fiber"
 	"github.com/gofiber/fiber/middleware"
@@ -10,6 +12,7 @@ import (
 )
 
 func main() {
+	start := time.Now()
 	if err := db.Connect(); err != nil {
 		log.Fatal(err)
 	}
@@ -18,6 +21,6 @@ func main() {
 	app.Use(middleware.Logger())
 
 	router.SetupRoutes(app)
-
+	fmt.Println("Time taken: ", time.Since(start))
 	app.Listen(8000)
 }
