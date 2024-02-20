@@ -1,0 +1,81 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Location {
+  id: ID!
+  name: String
+  lat: Float
+  long: Float
+  state: String
+  altitude: Int
+  description: String
+  coverUrl: String
+  homestays: [Homestay]
+}
+
+type Homestay {
+  id: ID!
+  name: String
+  address: String
+  location: Location
+  rooms: [Room]
+}
+
+type Room {
+  id: ID!
+  name: String!
+  category: String!
+  baseOccupancy: Boolean
+  extraOccupancy: Boolean
+  toiletAttached: Boolean
+  balconyAttached: Boolean
+  kitchenAttached: Boolean
+  airConditioned: Boolean
+  recommended: Boolean
+  isDorm: Boolean
+  homestay: Homestay
+}
+
+type Query {
+  locations: [Location!]!
+  homestays(locationID: ID): [Homestay!]! 
+  homestay(homestayID: ID!): Homestay! # Fetch a homestay and its rooms 
+  rooms: [Room!]!
+}
+
+input NewLocation {
+  name: String!
+  lat: Float!
+  long: Float!
+  state: String!
+  altitude: Int!
+  description: String!
+  coverUrl: String!
+}
+
+input NewHomestay {
+  name: String!
+  address: String!
+  locationId: String!
+}
+
+input NewRoom {
+  name: String!
+  category: String!
+  baseOccupancy: Boolean!
+  extraOccupancy: Boolean!
+  toiletAttached: Boolean!
+  balconyAttached: Boolean!
+  kitchenAttached: Boolean!
+  airConditioned: Boolean!
+  recommended: Boolean!
+  isDorm: Boolean!
+  homestayId: String!
+}
+
+type Mutation {
+  createLocation(input: NewLocation!): Location!
+  createHomestay(input: NewHomestay!): Homestay!
+  createRoom(input: NewRoom!): Room!
+}
