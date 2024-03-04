@@ -28,7 +28,7 @@ type Mutation struct {
 type NewHomestay struct {
 	Name       string `json:"name"`
 	Address    string `json:"address"`
-	LocationID string `json:"locationId"`
+	LocationID int    `json:"locationId"`
 }
 
 type NewLocation struct {
@@ -37,22 +37,22 @@ type NewLocation struct {
 	Long        float64 `json:"long"`
 	State       string  `json:"state"`
 	Altitude    int     `json:"altitude"`
-	Description string  `json:"description"`
+	Description *string `json:"description,omitempty"`
 	CoverURL    string  `json:"coverUrl"`
 }
 
 type NewRoom struct {
 	Name            string `json:"name"`
 	Category        string `json:"category"`
-	BaseOccupancy   bool   `json:"baseOccupancy"`
-	ExtraOccupancy  bool   `json:"extraOccupancy"`
-	ToiletAttached  bool   `json:"toiletAttached"`
-	BalconyAttached bool   `json:"balconyAttached"`
-	KitchenAttached bool   `json:"kitchenAttached"`
-	AirConditioned  bool   `json:"airConditioned"`
-	Recommended     bool   `json:"recommended"`
-	IsDorm          bool   `json:"isDorm"`
-	HomestayID      string `json:"homestayId"`
+	BaseOccupancy   int    `json:"baseOccupancy"`
+	ExtraOccupancy  *int   `json:"extraOccupancy,omitempty"`
+	ToiletAttached  *bool  `json:"toiletAttached,omitempty"`
+	BalconyAttached *bool  `json:"balconyAttached,omitempty"`
+	KitchenAttached *bool  `json:"kitchenAttached,omitempty"`
+	AirConditioned  *bool  `json:"airConditioned,omitempty"`
+	Recommended     *bool  `json:"recommended,omitempty"`
+	IsDorm          *bool  `json:"isDorm,omitempty"`
+	HomestayID      int    `json:"homestayId"`
 }
 
 type Query struct {
@@ -62,8 +62,8 @@ type Room struct {
 	ID              int       `json:"id"`
 	Name            string    `json:"name"`
 	Category        string    `json:"category"`
-	BaseOccupancy   *bool     `json:"baseOccupancy,omitempty"`
-	ExtraOccupancy  *bool     `json:"extraOccupancy,omitempty"`
+	BaseOccupancy   *int      `json:"baseOccupancy,omitempty"`
+	ExtraOccupancy  *int      `json:"extraOccupancy,omitempty"`
 	ToiletAttached  *bool     `json:"toiletAttached,omitempty"`
 	BalconyAttached *bool     `json:"balconyAttached,omitempty"`
 	KitchenAttached *bool     `json:"kitchenAttached,omitempty"`

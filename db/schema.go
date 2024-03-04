@@ -1,10 +1,14 @@
 package db
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
 
 func CreateLocationTable() (*sql.Rows, error) {
+	fmt.Println("Creating location table")
 	return DB.Query(`CREATE TABLE IF NOT EXISTS location (
-		id SERIAL PRIMARY KEY,
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name VARCHAR UNIQUE NOT NULL,
 		lat FLOAT,
 		long FLOAT,
@@ -14,9 +18,21 @@ func CreateLocationTable() (*sql.Rows, error) {
 		coverUrl VARCHAR
 	)`)
 }
+
+func DeleteLocationTable() (*sql.Rows, error) {
+	return DB.Query(`DROP TABLE IF EXISTS location`)
+}
+
+func DeleteHomestayTable() (*sql.Rows, error) {
+	return DB.Query(`DROP TABLE IF EXISTS homestay`)
+}
+
+func DeleteRoomTable() (*sql.Rows, error) {
+	return DB.Query(`DROP TABLE IF EXISTS room`)
+}
 func CreateHomestayTable() (*sql.Rows, error) {
 	return DB.Query(`CREATE TABLE IF NOT EXISTS homestay (
-		id SERIAL PRIMARY KEY,
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name VARCHAR NOT NULL,
 		address VARCHAR,
 		locationId INTEGER,
@@ -25,7 +41,7 @@ func CreateHomestayTable() (*sql.Rows, error) {
 }
 func CreateRoomTable() (*sql.Rows, error) {
 	return DB.Query(`CREATE TABLE IF NOT EXISTS room (
-		id SERIAL PRIMARY KEY,
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name VARCHAR NOT NULL,
 		category VARCHAR NOT NULL,
 		baseOccupancy INTEGER NOT NULL,

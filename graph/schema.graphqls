@@ -26,8 +26,8 @@ type Room {
   id: ID!
   name: String!
   category: String!
-  baseOccupancy: Boolean
-  extraOccupancy: Boolean
+  baseOccupancy: Int
+  extraOccupancy: Int
   toiletAttached: Boolean
   balconyAttached: Boolean
   kitchenAttached: Boolean
@@ -38,10 +38,12 @@ type Room {
 }
 
 type Query {
-  locations: [Location!]!
-  homestays(locationID: ID): [Homestay!]! 
+  locations: [Location!]! # Fetch all locations
+  homestays(locationID: ID): [Homestay!]! # Fetch all homestays 
   homestay(homestayID: ID!): Homestay! # Fetch a homestay and its rooms 
-  rooms: [Room!]!
+  rooms: [Room!]! # Fetch all rooms
+  room(homestayID: ID!): [Room!]! # Fetch rooms of a homestay
+  askMeAnything(prompt: String): String! 
 }
 
 input NewLocation {
@@ -50,28 +52,28 @@ input NewLocation {
   long: Float!
   state: String!
   altitude: Int!
-  description: String!
+  description: String
   coverUrl: String!
 }
 
 input NewHomestay {
   name: String!
   address: String!
-  locationId: String!
+  locationId: Int!
 }
 
 input NewRoom {
   name: String!
   category: String!
-  baseOccupancy: Boolean!
-  extraOccupancy: Boolean!
-  toiletAttached: Boolean!
-  balconyAttached: Boolean!
-  kitchenAttached: Boolean!
-  airConditioned: Boolean!
-  recommended: Boolean!
-  isDorm: Boolean!
-  homestayId: String!
+  baseOccupancy: Int!
+  extraOccupancy: Int
+  toiletAttached: Boolean
+  balconyAttached: Boolean
+  kitchenAttached: Boolean
+  airConditioned: Boolean
+  recommended: Boolean
+  isDorm: Boolean
+  homestayId: Int!
 }
 
 type Mutation {

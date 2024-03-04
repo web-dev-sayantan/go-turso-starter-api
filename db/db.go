@@ -24,6 +24,7 @@ func Connect() error {
 	if err = DB.Ping(); err != nil {
 		return err
 	}
+
 	if _, err = CreateLocationTable(); err != nil {
 		return err
 	}
