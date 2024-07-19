@@ -35,8 +35,8 @@ func CreateHomestayTable() (*sql.Rows, error) {
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		name VARCHAR NOT NULL,
 		address VARCHAR,
-		locationId INTEGER,
-		FOREIGN KEY (locationId) REFERENCES location(id) 
+		locationName VARCHAR,
+		FOREIGN KEY (locationId) REFERENCES location(name) 
 	)`)
 }
 func CreateRoomTable() (*sql.Rows, error) {
@@ -52,7 +52,12 @@ func CreateRoomTable() (*sql.Rows, error) {
 		airConditioned BOOLEAN DEFAULT false,
 		recommended BOOLEAN DEFAULT false,
 		isDorm BOOLEAN DEFAULT false,
+		roomCount INTEGER DEFAULT 1,
 		homestayId INTEGER,
+		categoryId VARCHAR,
+		foodPlanId VARCHAR,
 		FOREIGN KEY (homestayId) REFERENCES homestay(id) 
+		FOREIGN KEY (categoryId) REFERENCES category(id) 
+		FOREIGN KEY (foodPlanId) REFERENCES foodplan(id) 
 	)`)
 }

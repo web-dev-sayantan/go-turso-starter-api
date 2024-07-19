@@ -47,7 +47,7 @@ func (r *mutationResolver) CreateHomestay(ctx context.Context, input model.NewHo
 		return nil, err
 	}
 	defer stmt.Close()
-	result, err := stmt.Exec(input.Name, input.Address, input.LocationID)
+	result, err := stmt.Exec(input.Name, input.Address, input.LocationName)
 	if err != nil {
 		return nil, err
 	}
@@ -65,16 +65,12 @@ func (r *mutationResolver) CreateHomestay(ctx context.Context, input model.NewHo
 
 // CreateRoom is the resolver for the createRoom field.
 func (r *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) (*model.Room, error) {
-	stmt, err := r.DB.Prepare("INSERT INTO room(name, category, baseOccupancy, extraOccupancy, toiletAttached, balconyAttached, kitchenAttached, airConditioned, recommended, isDorm, homestayId) VALUES(? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := r.DB.Prepare("INSERT INTO room(name, categoryId, baseOccupancy, extraOccupancy, toiletAttached, balconyAttached, kitchenAttached, airConditioned, recommended, isDorm, homestayId) VALUES(? ,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 	// generate default values for extraOccupancy, toiletAttached, balconyAttached, kitchenAttached, airConditioned, recommended, isDorm
-	if input.ExtraOccupancy == nil {
-		extraOccupancy := 0
-		input.ExtraOccupancy = &extraOccupancy
-	}
 	if input.ToiletAttached == nil {
 		toiletAttached := true
 		input.ToiletAttached = &toiletAttached
@@ -91,9 +87,9 @@ func (r *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) 
 		airConditioned := false
 		input.AirConditioned = &airConditioned
 	}
-	if input.Recommended == nil {
+	if input.HouseRecommendation == nil {
 		recommended := false
-		input.Recommended = &recommended
+		input.HouseRecommendation = &recommended
 	}
 	if input.IsDorm == nil {
 		isDorm := false
@@ -102,7 +98,7 @@ func (r *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) 
 
 	fmt.Println(input)
 	// insert into the database
-	result, err := stmt.Exec(input.Name, input.Category, input.BaseOccupancy, input.ExtraOccupancy, input.ToiletAttached, input.BalconyAttached, input.KitchenAttached, input.AirConditioned, input.Recommended, input.IsDorm, input.HomestayID)
+	result, err := stmt.Exec(input.Name, input.CategoryID, input.Occupancy, input.ToiletAttached, input.BalconyAttached, input.KitchenAttached, input.AirConditioned, input.HouseRecommendation, input.IsDorm, input.HomestayID)
 	if err != nil {
 		return nil, err
 	}
@@ -111,18 +107,17 @@ func (r *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) 
 		return nil, err
 	}
 	newRoom := model.Room{
-		ID:              int(lastInsertedID),
-		Name:            input.Name,
-		Category:        input.Category,
-		BaseOccupancy:   &input.BaseOccupancy,
-		ExtraOccupancy:  input.ExtraOccupancy,
-		ToiletAttached:  input.ToiletAttached,
-		BalconyAttached: input.BalconyAttached,
-		KitchenAttached: input.KitchenAttached,
-		AirConditioned:  input.AirConditioned,
-		Recommended:     input.Recommended,
-		IsDorm:          input.IsDorm,
-		Homestay:        &model.Homestay{},
+		ID:                  int(lastInsertedID),
+		Name:                input.Name,
+		Occupancy:           &input.Occupancy,
+		ToiletAttached:      input.ToiletAttached,
+		BalconyAttached:     input.BalconyAttached,
+		KitchenAttached:     input.KitchenAttached,
+		AirConditioned:      input.AirConditioned,
+		HouseRecommendation: input.HouseRecommendation,
+		IsDorm:              input.IsDorm,
+		Category:            &model.Category{},
+		Homestay:            &model.Homestay{},
 	}
 	return &newRoom, nil
 }

@@ -2,6 +2,32 @@
 
 package model
 
+import (
+	"time"
+)
+
+type Availability struct {
+	ID       int       `json:"id"`
+	StayDate time.Time `json:"stayDate"`
+	AvlCount int       `json:"avlCount"`
+	Room     []*Room   `json:"room,omitempty"`
+}
+
+type Category struct {
+	ID          int     `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Rooms       []*Room `json:"rooms,omitempty"`
+}
+
+type FoodPlan struct {
+	ID       int       `json:"id"`
+	Name     string    `json:"name"`
+	Tariff   *int      `json:"tariff,omitempty"`
+	NonVeg   *bool     `json:"nonVeg,omitempty"`
+	Homestay *Homestay `json:"homestay,omitempty"`
+}
+
 type Homestay struct {
 	ID       int       `json:"id"`
 	Name     *string   `json:"name,omitempty"`
@@ -26,9 +52,9 @@ type Mutation struct {
 }
 
 type NewHomestay struct {
-	Name       string `json:"name"`
-	Address    string `json:"address"`
-	LocationID int    `json:"locationId"`
+	Name         string `json:"name"`
+	Address      string `json:"address"`
+	LocationName string `json:"locationName"`
 }
 
 type NewLocation struct {
@@ -42,33 +68,34 @@ type NewLocation struct {
 }
 
 type NewRoom struct {
-	Name            string `json:"name"`
-	Category        string `json:"category"`
-	BaseOccupancy   int    `json:"baseOccupancy"`
-	ExtraOccupancy  *int   `json:"extraOccupancy,omitempty"`
-	ToiletAttached  *bool  `json:"toiletAttached,omitempty"`
-	BalconyAttached *bool  `json:"balconyAttached,omitempty"`
-	KitchenAttached *bool  `json:"kitchenAttached,omitempty"`
-	AirConditioned  *bool  `json:"airConditioned,omitempty"`
-	Recommended     *bool  `json:"recommended,omitempty"`
-	IsDorm          *bool  `json:"isDorm,omitempty"`
-	HomestayID      int    `json:"homestayId"`
+	Name                string `json:"name"`
+	Occupancy           int    `json:"occupancy"`
+	RoomCount           *int   `json:"roomCount,omitempty"`
+	ToiletAttached      *bool  `json:"toiletAttached,omitempty"`
+	BalconyAttached     *bool  `json:"balconyAttached,omitempty"`
+	KitchenAttached     *bool  `json:"kitchenAttached,omitempty"`
+	AirConditioned      *bool  `json:"airConditioned,omitempty"`
+	HouseRecommendation *bool  `json:"houseRecommendation,omitempty"`
+	IsDorm              *bool  `json:"isDorm,omitempty"`
+	CategoryID          string `json:"categoryId"`
+	HomestayID          string `json:"homestayId"`
 }
 
 type Query struct {
 }
 
 type Room struct {
-	ID              int       `json:"id"`
-	Name            string    `json:"name"`
-	Category        string    `json:"category"`
-	BaseOccupancy   *int      `json:"baseOccupancy,omitempty"`
-	ExtraOccupancy  *int      `json:"extraOccupancy,omitempty"`
-	ToiletAttached  *bool     `json:"toiletAttached,omitempty"`
-	BalconyAttached *bool     `json:"balconyAttached,omitempty"`
-	KitchenAttached *bool     `json:"kitchenAttached,omitempty"`
-	AirConditioned  *bool     `json:"airConditioned,omitempty"`
-	Recommended     *bool     `json:"recommended,omitempty"`
-	IsDorm          *bool     `json:"isDorm,omitempty"`
-	Homestay        *Homestay `json:"homestay,omitempty"`
+	ID                  int       `json:"id"`
+	Name                string    `json:"name"`
+	RoomCount           *int      `json:"roomCount,omitempty"`
+	Occupancy           *int      `json:"occupancy,omitempty"`
+	ToiletAttached      *bool     `json:"toiletAttached,omitempty"`
+	BalconyAttached     *bool     `json:"balconyAttached,omitempty"`
+	KitchenAttached     *bool     `json:"kitchenAttached,omitempty"`
+	AirConditioned      *bool     `json:"airConditioned,omitempty"`
+	HouseRecommendation *bool     `json:"houseRecommendation,omitempty"`
+	IsDorm              *bool     `json:"isDorm,omitempty"`
+	Category            *Category `json:"category,omitempty"`
+	FoodPlan            *FoodPlan `json:"foodPlan,omitempty"`
+	Homestay            *Homestay `json:"homestay,omitempty"`
 }

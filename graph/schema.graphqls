@@ -2,6 +2,8 @@
 #
 # https://gqlgen.com/getting-started/
 
+scalar Time
+
 type Location {
   id: ID!
   name: String
@@ -22,19 +24,42 @@ type Homestay {
   rooms: [Room]
 }
 
+type Category {
+  id: ID!
+  name: String!
+  description: String!
+  rooms: [Room]
+}
+
+type FoodPlan {
+  id: ID!
+  name: String!
+  tariff: Int
+  nonVeg: Boolean
+  homestay: Homestay
+}
+
 type Room {
   id: ID!
   name: String!
-  category: String!
-  baseOccupancy: Int
-  extraOccupancy: Int
+  roomCount: Int
+  occupancy: Int
   toiletAttached: Boolean
   balconyAttached: Boolean
   kitchenAttached: Boolean
   airConditioned: Boolean
-  recommended: Boolean
+  houseRecommendation: Boolean
   isDorm: Boolean
+  category: Category
+  foodPlan: FoodPlan
   homestay: Homestay
+}
+
+type Availability {
+  id: ID!
+  stayDate: Time!
+  avlCount: Int!
+  room: [Room]
 }
 
 type Query {
@@ -59,21 +84,21 @@ input NewLocation {
 input NewHomestay {
   name: String!
   address: String!
-  locationId: Int!
+  locationName: String!
 }
 
 input NewRoom {
   name: String!
-  category: String!
-  baseOccupancy: Int!
-  extraOccupancy: Int
+  occupancy: Int!
+  roomCount: Int
   toiletAttached: Boolean
   balconyAttached: Boolean
   kitchenAttached: Boolean
   airConditioned: Boolean
-  recommended: Boolean
+  houseRecommendation: Boolean
   isDorm: Boolean
-  homestayId: Int!
+  categoryId: String!
+  homestayId: String!
 }
 
 type Mutation {
