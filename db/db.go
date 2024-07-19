@@ -2,19 +2,19 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/ishanz23/go-turso-starter-api/config"
-	_ "github.com/tursodatabase/libsql-client-go/libsql"
+	_ "github.com/lib/pq"
 )
 
 var DB *sql.DB
 
 func Connect() error {
 	var err error
-	url := fmt.Sprintf("%s?authToken=%s", config.Config("TURSO_URL"), config.Config("TURSO_TOKEN"))
+	// url := fmt.Sprintf("%s?authToken=%s", config.Config("TURSO_URL"), config.Config("TURSO_TOKEN"))
+	url := config.Config("NEON_URL")
 
-	DB, err = sql.Open("libsql", url)
+	DB, err = sql.Open("postgres", url)
 	if err != nil {
 		return err
 	}

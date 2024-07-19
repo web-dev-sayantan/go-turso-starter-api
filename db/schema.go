@@ -2,20 +2,18 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 )
 
 func CreateLocationTable() (*sql.Rows, error) {
-	fmt.Println("Creating location table")
 	return DB.Query(`CREATE TABLE IF NOT EXISTS location (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name VARCHAR UNIQUE NOT NULL,
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(100) UNIQUE NOT NULL,
 		lat FLOAT,
 		long FLOAT,
-		state VARCHAR NOT NULL,
+		state VARCHAR(40) NOT NULL,
 		altitude INTEGER,
-		description VARCHAR,
-		coverUrl VARCHAR
+		description TEXT,
+		coverUrl TEXT
 	)`)
 }
 
@@ -32,18 +30,19 @@ func DeleteRoomTable() (*sql.Rows, error) {
 }
 func CreateHomestayTable() (*sql.Rows, error) {
 	return DB.Query(`CREATE TABLE IF NOT EXISTS homestay (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name VARCHAR NOT NULL,
-		address VARCHAR,
-		locationId INTEGER,
-		FOREIGN KEY (locationId) REFERENCES location(id) 
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(120) NOT NULL,
+		address VARCHAR(255),
+		locationId INT NOT NULL,
+		CONSTRAINT fk_location
+			FOREIGN KEY(locationId) REFERENCES location(id) 
 	)`)
 }
 func CreateRoomTable() (*sql.Rows, error) {
 	return DB.Query(`CREATE TABLE IF NOT EXISTS room (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		name VARCHAR NOT NULL,
-		category VARCHAR NOT NULL,
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(120) NOT NULL,
+		category VARCHAR(25) NOT NULL,
 		baseOccupancy INTEGER NOT NULL,
 		extraOccupancy INTEGER DEFAULT 0,
 		toiletAttached BOOLEAN DEFAULT true,
@@ -52,7 +51,7 @@ func CreateRoomTable() (*sql.Rows, error) {
 		airConditioned BOOLEAN DEFAULT false,
 		recommended BOOLEAN DEFAULT false,
 		isDorm BOOLEAN DEFAULT false,
-		homestayId INTEGER,
-		FOREIGN KEY (homestayId) REFERENCES homestay(id) 
+		homestayId INT NOT NULL,
+		CONSTRAINT fk_homestay FOREIGN KEY (homestayId) REFERENCES homestay(id) 
 	)`)
 }

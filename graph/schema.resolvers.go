@@ -14,7 +14,7 @@ import (
 
 // CreateLocation is the resolver for the createLocation field.
 func (r *mutationResolver) CreateLocation(ctx context.Context, input model.NewLocation) (*model.Location, error) {
-	stmt, err := r.DB.Prepare("INSERT INTO location(name, state, description, lat, long, altitude, coverUrl) VALUES(?, ?, ?, ?, ?, ?, ?)")
+	stmt, err := r.DB.Prepare("INSERT INTO location(name, state, description, lat, long, altitude, coverUrl) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING id")
 	if err != nil {
 		return nil, err
 	}
@@ -23,6 +23,7 @@ func (r *mutationResolver) CreateLocation(ctx context.Context, input model.NewLo
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(result.LastInsertId())
 	lastInsertedID, err := result.LastInsertId()
 	if err != nil {
 		return nil, err
@@ -42,19 +43,9 @@ func (r *mutationResolver) CreateLocation(ctx context.Context, input model.NewLo
 
 // CreateHomestay is the resolver for the createHomestay field.
 func (r *mutationResolver) CreateHomestay(ctx context.Context, input model.NewHomestay) (*model.Homestay, error) {
-	stmt, err := r.DB.Prepare("INSERT INTO homestay(name, address, locationId) VALUES(?, ?, ?)")
-	if err != nil {
-		return nil, err
-	}
-	defer stmt.Close()
-	result, err := stmt.Exec(input.Name, input.Address, input.LocationID)
-	if err != nil {
-		return nil, err
-	}
-	lastInsertedID, err := result.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
+	var lastInsertedID int
+	r.DB.QueryRow("INSERT INTO homestay(name, address, locationId) VALUES($1, $2, $3) RETURNING id", input.Name, input.Address, input.LocationID).Scan(&lastInsertedID)
+
 	newHomestay := model.Homestay{
 		ID:      int(lastInsertedID),
 		Name:    &input.Name,
