@@ -91,9 +91,10 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateHomestay func(childComplexity int, input model.NewHomestay) int
-		CreateLocation func(childComplexity int, input model.NewLocation) int
-		CreateRoom     func(childComplexity int, input model.NewRoom) int
+		CreateAvailability func(childComplexity int, input model.NewAvailability) int
+		CreateHomestay     func(childComplexity int, input model.NewHomestay) int
+		CreateLocation     func(childComplexity int, input model.NewLocation) int
+		CreateRoom         func(childComplexity int, input model.NewRoom) int
 	}
 
 	Query struct {
@@ -126,6 +127,7 @@ type MutationResolver interface {
 	CreateLocation(ctx context.Context, input model.NewLocation) (*model.Location, error)
 	CreateHomestay(ctx context.Context, input model.NewHomestay) (*model.Homestay, error)
 	CreateRoom(ctx context.Context, input model.NewRoom) (*model.Room, error)
+	CreateAvailability(ctx context.Context, input model.NewAvailability) (*model.Availability, error)
 }
 type QueryResolver interface {
 	Locations(ctx context.Context) ([]*model.Location, error)
@@ -344,6 +346,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Location.State(childComplexity), true
 
+	case "Mutation.createAvailability":
+		if e.complexity.Mutation.CreateAvailability == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAvailability_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAvailability(childComplexity, args["input"].(model.NewAvailability)), true
+
 	case "Mutation.createHomestay":
 		if e.complexity.Mutation.CreateHomestay == nil {
 			break
@@ -541,6 +555,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputNewAvailability,
 		ec.unmarshalInputNewHomestay,
 		ec.unmarshalInputNewLocation,
 		ec.unmarshalInputNewRoom,
@@ -659,6 +674,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_createAvailability_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewAvailability
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewAvailability2githubᚗcomᚋishanz23ᚋgoᚑtursoᚑstarterᚑapiᚋgraphᚋmodelᚐNewAvailability(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createHomestay_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -973,9 +1003,9 @@ func (ec *executionContext) _Availability_room(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Room)
+	res := resTmp.(*model.Room)
 	fc.Result = res
-	return ec.marshalORoom2ᚕᚖgithubᚗcomᚋishanz23ᚋgoᚑtursoᚑstarterᚑapiᚋgraphᚋmodelᚐRoom(ctx, field.Selections, res)
+	return ec.marshalORoom2ᚖgithubᚗcomᚋishanz23ᚋgoᚑtursoᚑstarterᚑapiᚋgraphᚋmodelᚐRoom(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Availability_room(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2302,6 +2332,71 @@ func (ec *executionContext) fieldContext_Mutation_createRoom(ctx context.Context
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createRoom_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createAvailability(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createAvailability(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateAvailability(rctx, fc.Args["input"].(model.NewAvailability))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Availability)
+	fc.Result = res
+	return ec.marshalNAvailability2ᚖgithubᚗcomᚋishanz23ᚋgoᚑtursoᚑstarterᚑapiᚋgraphᚋmodelᚐAvailability(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createAvailability(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Availability_id(ctx, field)
+			case "stayDate":
+				return ec.fieldContext_Availability_stayDate(ctx, field)
+			case "avlCount":
+				return ec.fieldContext_Availability_avlCount(ctx, field)
+			case "room":
+				return ec.fieldContext_Availability_room(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Availability", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createAvailability_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -5191,6 +5286,47 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputNewAvailability(ctx context.Context, obj interface{}) (model.NewAvailability, error) {
+	var it model.NewAvailability
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"stayDate", "avlCount", "roomId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "stayDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("stayDate"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StayDate = data
+		case "avlCount":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("avlCount"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AvlCount = data
+		case "roomId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("roomId"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.RoomID = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewHomestay(ctx context.Context, obj interface{}) (model.NewHomestay, error) {
 	var it model.NewHomestay
 	asMap := map[string]interface{}{}
@@ -5696,6 +5832,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "createRoom":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createRoom(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createAvailability":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createAvailability(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -6297,6 +6440,20 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 
 // region    ***************************** type.gotpl *****************************
 
+func (ec *executionContext) marshalNAvailability2githubᚗcomᚋishanz23ᚋgoᚑtursoᚑstarterᚑapiᚋgraphᚋmodelᚐAvailability(ctx context.Context, sel ast.SelectionSet, v model.Availability) graphql.Marshaler {
+	return ec._Availability(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAvailability2ᚖgithubᚗcomᚋishanz23ᚋgoᚑtursoᚑstarterᚑapiᚋgraphᚋmodelᚐAvailability(ctx context.Context, sel ast.SelectionSet, v *model.Availability) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Availability(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -6471,6 +6628,11 @@ func (ec *executionContext) marshalNLocation2ᚖgithubᚗcomᚋishanz23ᚋgoᚑt
 		return graphql.Null
 	}
 	return ec._Location(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNNewAvailability2githubᚗcomᚋishanz23ᚋgoᚑtursoᚑstarterᚑapiᚋgraphᚋmodelᚐNewAvailability(ctx context.Context, v interface{}) (model.NewAvailability, error) {
+	res, err := ec.unmarshalInputNewAvailability(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNNewHomestay2githubᚗcomᚋishanz23ᚋgoᚑtursoᚑstarterᚑapiᚋgraphᚋmodelᚐNewHomestay(ctx context.Context, v interface{}) (model.NewHomestay, error) {

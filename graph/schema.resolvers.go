@@ -7,6 +7,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/google/generative-ai-go/genai"
 	"github.com/ishanz23/go-turso-starter-api/graph/model"
@@ -120,6 +121,34 @@ func (r *mutationResolver) CreateRoom(ctx context.Context, input model.NewRoom) 
 		Homestay:            &model.Homestay{},
 	}
 	return &newRoom, nil
+}
+
+// CreateAvailability is the resolver for the createAvailability field.
+func (r *mutationResolver) CreateAvailability(ctx context.Context, input model.NewAvailability) (*model.Availability, error) {
+	stmt, err := r.DB.Prepare("INSERT INTO Availability(stayDate, avlCount, roomId) VALUES(?, ?, ?)")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	stayDate, err := time.Parse("2006-01-02", input.StayDate)
+	if err != nil {
+		return nil, err
+	}
+	result, err := stmt.Exec(stayDate.Unix(), input.AvlCount, input.RoomID)
+	if err != nil {
+		return nil, err
+	}
+	lastInsertedId, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	newAvailability := model.Availability{
+		ID:       int(lastInsertedId),
+		StayDate: stayDate,
+		AvlCount: input.AvlCount,
+		Room:     &model.Room{},
+	}
+	return &newAvailability, nil
 }
 
 // Locations is the resolver for the locations field.

@@ -59,7 +59,7 @@ type Availability {
   id: ID!
   stayDate: Time!
   avlCount: Int!
-  room: [Room]
+  room: Room
 }
 
 type Query {
@@ -101,8 +101,15 @@ input NewRoom {
   homestayId: String!
 }
 
+input NewAvailability {
+  stayDate: String!
+  avlCount: Int!
+  roomId: String!
+}
+
 type Mutation {
   createLocation(input: NewLocation!): Location!
   createHomestay(input: NewHomestay!): Homestay!
   createRoom(input: NewRoom!): Room!
+  createAvailability(input: NewAvailability!): Availability!
 }

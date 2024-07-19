@@ -10,7 +10,7 @@ type Availability struct {
 	ID       int       `json:"id"`
 	StayDate time.Time `json:"stayDate"`
 	AvlCount int       `json:"avlCount"`
-	Room     []*Room   `json:"room,omitempty"`
+	Room     *Room     `json:"room,omitempty"`
 }
 
 type Category struct {
@@ -49,6 +49,12 @@ type Location struct {
 }
 
 type Mutation struct {
+}
+
+type NewAvailability struct {
+	StayDate string `json:"stayDate"`
+	AvlCount int    `json:"avlCount"`
+	RoomID   string `json:"roomId"`
 }
 
 type NewHomestay struct {
