@@ -60,6 +60,8 @@ type Availability {
   stayDate: Time!
   avlCount: Int!
   room: Room
+  rate: Int
+  rateId: String
 }
 
 type Query {
